@@ -662,7 +662,28 @@
 		d.writeln( '</div>' );
 		d.close();
 		
-		$('#links', d).on( objHandlerOnLinkEvent, 'div' );
+		$('#links', d).on( {
+			mouseenter: function (e) {
+				$('#' + this.id).css( 'outline-width', '5px' );
+			},
+			mouseleave: function (e) {
+				$('#' + this.id).css( 'outline-width', '1px' );
+			},
+			dblclick: function (e) {
+				$(this).css( 'background-color', 'white' ).prop( 'contenteditable', true );
+				changed = true;
+			},
+			keydown: function (e) {
+				if ( e.which == 13 ) {
+					$(this).css( 'background-color', 'inherit' ).blur();
+					$(this).prop( 'contenteditable', false ).each( function () {
+						var m = $(this).text().match( /{{(\d+),(\d+)},{(\d+),(\d+)}}/ );
+						$('#' + this.id).css( { left: m[1], top: m[2], width: m[3], height: m[4] } );
+					} );
+				}
+			}
+		}
+		, 'div' );
 
 		$('#save', d).click( save_plist );
 
